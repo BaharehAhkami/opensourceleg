@@ -4,13 +4,13 @@ from logging import getLogger
 from queue import Empty, Queue
 from threading import Event, Thread
 
-from opensourceleg.com_protocol import OSLMsg, SocketIOFrame
+from opensourceleg.com.protocol import OSLMsg, SocketIOFrame
 
 QueueRegistry = list[tuple[set[str], Queue[OSLMsg], str]]
 
 
 class ComServer(Thread):
-    HOST: str = "127.0.0.1"
+    HOST: str = ""
     PORT: int = 65431
 
     def __init__(self):
@@ -155,6 +155,11 @@ class ComServerTx(Thread):
                         self.sock_close_evt.set()
                         print("[ComServerTx] [Sock] Client closed connection")
                         break
+                except TypeError as e:
+                    msg.type = "NACK"
+                    msg.data = {"error": f"{e.__class__.__name__}: {e}"}
+                    encoded_frame = SocketIOFrame.encode(msg)
+                    self.conn.sendall(encoded_frame)
         print("[ComServerTx] Ended")
 
 
