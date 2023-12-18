@@ -9,7 +9,7 @@ from time import perf_counter, sleep, time
 
 from com_protocol import OSLMsg, SocketIOFrame
 
-DEFAULT_HOST = "nb-rpi-100"
+DEFAULT_HOST = "130.241.80.35"
 DEFAULT_PORT = 65431
 
 
